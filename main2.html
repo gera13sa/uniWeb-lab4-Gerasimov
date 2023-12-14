@@ -17,19 +17,27 @@
             <form id="dataForm" class="flex flex-col gap-y-[30px]">
                 <div>
                 <label for="Sum">Введите сумму:</label>
-                <input type="number" class="outline outline-1 border-blacks rounded-lg w-[50%]" id="Sum" required>
-                </div>
+                <input type="number" class="outline outline-1 border-blacks rounded-lg w-[150px]" id="Sum" required>
+                    Руб.
+            </div>
                 <div>
                     <label for="Rate">Введите ставку:</label>
-                    <input type="number" class="outline outline-1 border-blacks rounded-lg w-[50%]" id="Rate" required>
+                    <input type="number" class="outline outline-1 border-blacks rounded-lg w-[150px]" id="Rate" required>
+                    Руб. / Час
                     </div>
                 <div>
+                    <div>
+                        <label for="RateHolNum">Введите количество рабочих праздничных дней:</label>
+                        <input type="number" class="outline outline-1 border-blacks rounded-lg w-[50px]" id="RateHolNum" required>
+                        Дней
+                        </div>
+                    <div>
 
-                <button type="button" class="bg-black w-[50%] text-white mx-auto rounded-xl py-[5px] mt-[20px]" onclick="saveData2()">Сохранить</button>
+                <button type="button" class="bg-black w-[50%] text-white mx-auto rounded-xl py-[5px] mt-[20px]" onclick="Calculate()">Рассчитать</button>
             </form>
-            <div class="flex flex-row w-full">
+
             <button type="button" class="bg-green-200 w-[50%] text-black mx-auto rounded-xl py-[5px] mt-[20px]" onclick="showData2()">Показать данные</button>
-        </div>
+
     </div>
 
         <script>
@@ -48,19 +56,33 @@
                 alert('Данные сохранены в localStorage!');
             }
 
-            function saveData2() {
-                const file = document.getElementById('photo')
-                const filename = file.files[0].name;
+            function Calculate() {
+
                 const formData = {
                     Sum: document.getElementById('Sum').value,
-                    birthYear: document.getElementById('birthYear').value,
-                    category: document.querySelector('input[name="category"]:checked').value,
-                    interests: Array.from(document.querySelectorAll('input[name="interest"]:checked')).map(checkbox => checkbox.value),
-                    filename: filename,
-                };
-        
-                localStorage.setItem('userData', JSON.stringify(formData));
-                alert('Данные сохранены в localStorage!');
+                    Rate: document.getElementById('Rate').value,
+                    RateHolNum: document.getElementById('RateHolNum').value,
+                   };
+                   
+                //Время накопления
+                let H = formData.Sum / formData.Rate
+
+                //Праздничные дни
+                if( H <= formData.RateHolNum)
+                   H /= 2;
+                else
+                   H -= formData.RateHolNum/2;
+
+                //Премия в треть зарплаты.
+                function getRandomInt(max) {
+                    return Math.floor(Math.random() * max);
+                }
+                let randPremia = getRandomInt(2);
+                if (randPremia == 1)
+                   H -= H/3;
+
+                localStorage.setItem('TimeToCollect', ConvertMinutes(H*60));
+                alert('Необходимое время для наколпения: ' + ConvertMinutes(H*60)  + " часов. Данные сохранены");
             }
 
             function showData() {
@@ -73,11 +95,23 @@
                 }
             }
 
+            function ConvertMinutes(num){
+                    d = Math.floor(num/1440); // 60*24
+                    h = Math.floor((num-(d*1440))/60);
+                    m = Math.round(num%60);
+                    if(d>0){
+                        return(d + " дней, " + h + " часов, "+m+" минут");
+                    }else{
+                        return(h + " часов, "+m+" минут");
+                    }
+                }
+
             function showData2() {
-                const storedData = localStorage.getItem('userData');
+                const storedData = localStorage.getItem('TimeToCollect');
+
 
                 if (storedData) {
-                    alert('Данные из localStorage:\n\n' + storedData);
+                    alert('Данные из localStorage:\n\n' + ConvertMinutes(storedData));
                 } else {
                     alert('Нет данных в localStorage.');
                 }
