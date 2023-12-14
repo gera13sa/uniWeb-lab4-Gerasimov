@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Накопление суммы</title>
+</head>
+<body class="bg-slate-200">
+    <div class="contaier">
+        <div class="header bg-green-100 py-5">
+            <h1 class="text-2xl font-bold ms-[60px]">Сайт для накоплений</h1>
+        </div>
+        <h2 class="ms-[16px] text-xl font-semibold my-[14px]">Для использования системы подайте заявку</h2>
+        <div class="block bg-white rounded-xl mx-[14px] px-[40px] py-[30px] mt-[14px]">
+            <h2 class="text-lg font-semibold">Введите свои данные:</h2>
+            <form id="dataForm" class="flex flex-col gap-y-[30px]">
+                <div>
+                <label for="fullName">ФИО:</label>
+                <input type="text" class="outline outline-1 border-blacks rounded-lg w-[50%]" id="fullName" required>
+                </div>
+
+                <div>
+                <label for="birthYear" >Год рождения:</label>
+                <select class="outline outline-1 border-blacks rounded-lg" id="birthYear" required>
+                    <option value="1990">1990</option>
+                    <option value="1991">1991</option>
+                    <option value="1992">1992</option>
+                    <option value="1993">1993</option>
+                    <option value="1994">1994</option>
+                    <option value="1995">1995</option>
+                    <option value="1996">1996</option>
+                    <option value="1997">1997</option>
+                    <option value="1998">1998</option>
+                    <option value="1999">1999</option>
+                    <option value="2000">2000</option>
+                    <option value="2001">2001</option>
+                    <option value="2002">2002</option>
+                </select>
+                </div>
+
+                <div>
+                <label>Категория:</label>
+                <input type="radio" name="category" value="employee" id="employee">
+                <label for="employee">Служащий</label>
+                <input type="radio" name="category" value="student" id="student">
+                <label for="student">Учащийся</label>
+                <input type="radio" name="category" value="entrepreneur" id="entrepreneur">
+                <label for="entrepreneur">Предприниматель</label>
+                </div>
+
+                <div>
+                    <label>Сфера интересов:</label>
+                    <input type="checkbox" name="interest" value="programming" id="programming">
+                    <label for="programming">Программирование</label>
+                    <input type="checkbox" name="interest" value="design" id="design">
+                    <label for="design">Дизайн</label>
+                    <input type="checkbox" name="interest" value="music" id="music">
+                    <label for="music">Музыка</label>
+                    <input type="checkbox" name="interest" value="paint" id="paint">
+                    <label for="music">Рисование</label>
+                </div>
+                <div>
+                <label for="photo">Загрузка фото:</label>
+                <input type="file" id="photo">
+                </div>
+                <button type="button" class="bg-black w-[50%] text-white mx-auto rounded-xl py-[5px] mt-[20px]" onclick="saveData()">Сохранить</button>
+            </form>
+            <div class="flex flex-row w-full">
+            <button type="button" class="bg-green-200 w-[50%] text-black mx-auto rounded-xl py-[5px] mt-[20px]" onclick="showData()">Показать данные</button>
+        </div>
+    </div>
+
+        <script>
+            function saveData() {
+                const file = document.getElementById('photo')
+                const filename = file.files[0].name;
+                const formData = {
+                    fullName: document.getElementById('fullName').value,
+                    birthYear: document.getElementById('birthYear').value,
+                    category: document.querySelector('input[name="category"]:checked').value,
+                    interests: Array.from(document.querySelectorAll('input[name="interest"]:checked')).map(checkbox => checkbox.value),
+                    filename: filename,
+                };
+        
+                localStorage.setItem('userData', JSON.stringify(formData));
+                alert('Данные сохранены в localStorage!');
+            }
+
+            function showData() {
+                const storedData = localStorage.getItem('userData');
+
+                if (storedData) {
+                    alert('Данные из localStorage:\n\n' + storedData);
+                } else {
+                    alert('Нет данных в localStorage.');
+                }
+            }
+        </script>
+
+    </div>
+</body>
+</html>
